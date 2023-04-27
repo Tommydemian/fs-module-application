@@ -5,3 +5,4 @@ const content = fs.readFileSync('./text.txt')
 console.log(content.toString());
 
 
+
