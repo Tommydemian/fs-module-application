@@ -6,6 +6,58 @@ const fs = require('fs/promises');
 //fs.open('_path', [flag])
 
 (async () => {
+    
+    // commands:
+    const CREATE_FILE = 'create a file' 
+    const DELETE_FILE = 'delete a file'
+    const RENAME_FILE = 'rename the file'
+    const ADD_TO_FILE = 'rename the file'
+
+    //create a file 
+    const createFile = async (path) => {
+        // just check if it exists
+        try {
+            // we want to check wheter or not we already have that file 
+             const existingFileHandle = await fs.open(path, 'r');
+             existingFileHandle.close()
+             // we alread have that file...
+            return console.log(`the file ${path} already exists.`);
+        } catch (error) {
+            // we don't want the file,now we should create it
+            const newFileHandler = await fs.open(path, 'w');
+            console.log('a new file was successfully created');
+            newFileHandler.close()
+        }
+    }
+
+    // delete a file
+    const deleteFile = async() => {
+
+    } 
+
+    // rename a file
+    const renameFile = async(oldPath, newPath) => {
+        console.log(oldPath, 'OLD');
+        console.log(newPath, 'NEW');
+      try {
+        // check if the file exists
+       setTimeout(async () => {
+           const renamedFile = await fs.rename(oldPath, newPath);
+           console.log(`the file was successfully renamed to: ${newPath}`);
+       }, 4000)
+      } catch (error) {
+        console.error('No such file or directory', error);
+      }
+    }
+
+    // add to file 
+    const addToFile = async() => {
+
+    }
+
+
+
+
     const watcher = fs.watch('./command.txt');
     const commandFileHandler = await fs.open('./command.txt', 'r'); // fs.open => creates a instance of FileHandler class
 
@@ -23,16 +75,46 @@ const fs = require('fs/promises');
             const position = 0
 
             // get the size of our file:  
-            const content = await commandFileHandler.read(
-                buff,
-                offset,
-                length,
-                position
-            );
-            console.log(content);
+            await commandFileHandler.read(buff, offset, length, position)
+
+
+            const command = buff.toString('utf-8');
+            // create a file:
+            // create a file <path>
+            if (command.includes(CREATE_FILE)){
+                const filePath  = command.substring((CREATE_FILE).length + 1)
+                console.log(String(filePath));
+                createFile(filePath)
+            }
+            // delete a file:
+            // delete a file <path>
+            if (command.includes(DELETE_FILE)){
+                const filePath  = command.substring((DELETE_FILE).length + 1)
+                console.log(String(filePath));
+                deleteFile(filePath)
+            }
+            // rename a file:
+            // rename the file <oldpath> to <newpath>
+            if (command.includes(RENAME_FILE)){
+                const setPath  = command.substring(RENAME_FILE.length + 1).split(' ')
+                const oldPath = setPath[0]
+                const newPath = setPath[2]
+                console.log(setPath);
+                // console.log(oldPath, 'OLD');
+                // console.log(newPath, 'NEW');
+                renameFile(oldPath, newPath)
+            }
+            // add to a file:
+            // add to the file <path>
+            if (command.includes(ADD_TO_FILE)){
+                const filePath  = command.substring((ADD_TO_FILE).length + 1)
+                console.log(String(filePath));
+                addToFile(filePath)
+            }
     })
 
-    // decoder
+    // decoder: 01 => meaningul
+    // encoder: meaningful => 01
 
 
     // watcher...
