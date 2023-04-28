@@ -1,1 +1,1 @@
-rename the file exito.txt to worklikehelllike2pac.txt
+delete the file user.txt
