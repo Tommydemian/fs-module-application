@@ -12,8 +12,7 @@ const fs = require('fs/promises');
     const DELETE_FILE = "delete the file";
     const RENAME_FILE = "rename the file";
     const ADD_TO_FILE = "add to the file";
-
-    //create a file 
+ 
     const createFile = async (path) => {
         // just check if it exists
         try {
@@ -30,40 +29,50 @@ const fs = require('fs/promises');
         }
     }
 
-    // delete a file
     const deleteFile = async (path) => {
         try {
-            await fs.unlink(path);
-            console.log("The file was successfully removed.");
+          await fs.unlink(path);
+          console.log("The file was successfully removed.");
         } catch (e) {
-            if (e.code === "ENOENT") {
-                console.log("No file at this path to remove.");
-            } else {
-                console.log("An error occurred while removing the file: ");
-                console.log(e);
-            }
+          if (e.code === "ENOENT") {
+            console.log("No file at this path to remove.");
+          } else {
+            console.log("An error occurred while removing the file: ");
+            console.log(e);
+          }
         }
-    };
-
-    // rename a file
-    const renameFile = async (oldPath, newPath) => {
-        console.log(oldPath, 'OLD');
-        console.log(newPath, 'NEW');
+      };
+    
+      const renameFile = async (oldPath, newPath) => {
         try {
-            // check if the file exists
-            setTimeout(async () => {
-                const renamedFile = await fs.rename(oldPath, newPath);
-                console.log(`the file was successfully renamed to: ${newPath}`);
-            }, 4000)
-        } catch (error) {
-            console.error('No such file or directory', error);
+          await fs.rename(oldPath, newPath);
+          console.log("The file was successfully renamed.");
+        } catch (e) {
+          if (e.code === "ENOENT") {
+            console.log(
+              "No file at this path to rename, or the destination doesn't exist."
+            );
+          } else {
+            console.log("An error occurred while removing the file: ");
+            console.log(e);
+          }
         }
-    }
-
-    // add to file 
-    const addToFile = async () => {
-
-    }
+      };
+    
+      let addedContent;
+    
+      const addToFile = async (path, content) => {
+        if (addedContent === content) return;
+        try {
+          const fileHandle = await fs.open(path, "a");
+          fileHandle.write(content);
+          addedContent = content;
+          console.log("The content was added successfully.");
+        } catch (e) {
+          console.log("An error occurred while removing the file: ");
+          console.log(e);
+        }
+      };
 
     const watcher = fs.watch('./command.txt');
 
